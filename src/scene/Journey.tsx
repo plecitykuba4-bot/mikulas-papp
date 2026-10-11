@@ -9,10 +9,10 @@ import { JAVA, codeLen, drawEditor, drawSite, fontsReady, makeScreen } from "./s
 import type { Cam } from "./View";
 
 export const journeyCam: Cam = { fov: 30, pos: [4.6, 4.6, 8.8], look: [0.1, 0.8, 0] };
-// na mobilu je rámeček nižší: kamera dál a níž, ať se stůl vejde celý i s nohama
+// na mobilu je rámeček nižší: kamera míří níž, ať je stůl uprostřed (ořez nehrozí, scéna má přesah)
 const narrow = typeof matchMedia !== "undefined" && matchMedia("(max-width: 860px)").matches;
 const CAM_POS = new THREE.Vector3(...journeyCam.pos);
-const CAM_LOOK = new THREE.Vector3(0.1, narrow ? 0.45 : 0.8, 0);
+const CAM_LOOK = new THREE.Vector3(0.1, narrow ? 0.55 : 0.8, 0);
 
 /* Cesta: pracovní stůl, na kterém přibývá vybavení podle kariéry.
    0 plošný spoj a pájka → 1 notebook s Javou → 2 monitor s webem, klávesnice, kafe → 3 odznak #OPENTOWORK.
@@ -86,7 +86,7 @@ export default function Journey() {
 
   useFrame(({ clock, camera }, delta) => {
     if (narrow) {
-      camera.position.copy(CAM_POS).sub(CAM_LOOK).multiplyScalar(1.2).add(CAM_LOOK);
+      camera.position.copy(CAM_POS).sub(CAM_LOOK).multiplyScalar(0.92).add(CAM_LOOK);
       camera.lookAt(CAM_LOOK);
     }
     const dt = Math.min(delta, 1 / 20);

@@ -557,6 +557,11 @@ button {
   height: 72vh;
   max-height: 680px;
 }
+/* scéna s přesahem se nesmí ořezávat o hranu svého rámečku */
+.stage-journey,
+.stage-join {
+  overflow: visible;
+}
 .jr-now {
   display: none;
 }
@@ -1253,7 +1258,7 @@ button {
   height: min(74vh, 660px);
   min-height: 380px;
   border-radius: var(--r);
-  background: radial-gradient(60% 55% at 50% 55%, rgba(255, 176, 32, 0.2), transparent 70%);
+  background: radial-gradient(closest-side, rgba(255, 176, 32, 0.18), transparent);
 }
 .foot {
   border-top: 0;
@@ -1308,15 +1313,14 @@ button {
     right: 0;
     top: 100%;
     height: 34px;
+    /* pod plátnem se stolem (jinak by přechod uřízl nohy stolu), ale nad textem milníků */
+    z-index: -1;
     background: linear-gradient(var(--lav), rgba(236, 235, 255, 0));
     pointer-events: none;
   }
   .stage-journey {
     height: 38vh;
     min-height: 260px;
-    border-radius: 22px;
-    background: linear-gradient(180deg, #ffffff, #f3f1ff);
-    box-shadow: 0 18px 40px -26px rgba(75, 61, 245, 0.6);
   }
   .jr-now {
     display: block;

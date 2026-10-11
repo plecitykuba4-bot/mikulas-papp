@@ -147,8 +147,14 @@ export function View({ slot, cam, priority = 1, children }: { slot: Slot; cam: C
   useFrame(({ gl, size, clock }) => {
     const el = slot.ref.current;
     if (!el || !entry.ready) return;
-    const r = el.getBoundingClientRect();
-    if (r.width < 2 || r.bottom < 0 || r.top > size.height || r.right < 0 || r.left > size.width) {
+    const r0 = el.getBoundingClientRect();
+    // přesah: kreslí se do většího obdélníku, zorné pole se úměrně rozšíří, takže scéna zůstane
+    // stejně velká a na stejném místě, jen nemá hranu, o kterou by se ořízla
+    const b = slot.bleed ?? 0;
+    const bx = r0.width * b,
+      by = r0.height * b;
+    const r = { left: r0.left - bx, right: r0.right + bx, top: r0.top - by, bottom: r0.bottom + by, width: r0.width + 2 * bx, height: r0.height + 2 * by };
+    if (r0.width < 2 || r.bottom < 0 || r.top > size.height || r.right < 0 || r.left > size.width) {
       slot.alpha = 0;
       return;
     }
@@ -178,8 +184,10 @@ export function View({ slot, cam, priority = 1, children }: { slot: Slot; cam: C
     }
 
     const aspect = r.width / r.height;
-    if (camera.aspect !== aspect) {
+    const fov = b ? THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(cam.fov) / 2) * (1 + 2 * b))) : cam.fov;
+    if (camera.aspect !== aspect || camera.fov !== fov) {
       camera.aspect = aspect;
+      camera.fov = fov;
       camera.updateProjectionMatrix();
     }
     const bottom = size.height - r.bottom;

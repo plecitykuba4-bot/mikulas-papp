@@ -7,6 +7,7 @@ export type Slot = {
   my: number;
   hover: boolean;
   alpha: number; // jak moc je 3D právě vidět (0..1), zapisuje View
+  bleed?: number; // o kolik (násobek rozměru) se kreslí i za hranu prvku, aby scéna neměla ořez
 };
 
 const slot = (): Slot => ({ ref: { current: null }, mx: 0, my: 0, hover: false, alpha: 0 });
@@ -17,6 +18,10 @@ export const slots = {
   icons: [slot(), slot(), slot(), slot()],
   contact: slot(),
 };
+
+// stůl i obálka přecházejí volně do stránky: kreslí se daleko za svůj obdélník
+slots.journey.bleed = 0.4;
+slots.contact.bleed = 0.25;
 
 export const scene = {
   reduced: false,

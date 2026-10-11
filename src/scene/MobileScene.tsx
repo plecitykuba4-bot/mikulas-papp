@@ -55,6 +55,10 @@ function Stage({ slot, cam, C }: { slot: Slot; cam: Cam; C: () => React.JSX.Elem
     return () => io.disconnect();
   }, [el]);
   if (!el) return null;
+  // přesah nahoru a dolů (do stran ne, stránka by se rozjela): plátno je vyšší než rámeček
+  // a zorné pole se úměrně rozšíří, takže scéna zůstane stejně velká a nemá ořez
+  const b = slot.bleed ?? 0;
+  const fov = b ? (2 * Math.atan(Math.tan((cam.fov * Math.PI) / 360) * (1 + 2 * b)) * 180) / Math.PI : cam.fov;
   return createPortal(
     <Canvas
       className="stage-gl"
@@ -62,12 +66,12 @@ function Stage({ slot, cam, C }: { slot: Slot; cam: Cam; C: () => React.JSX.Elem
       frameloop="always"
       dpr={[1, 1.25]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      camera={{ fov: cam.fov, position: cam.pos, near: 0.1, far: 60 }}
+      camera={{ fov, position: cam.pos, near: 0.1, far: 60 }}
       onCreated={({ camera, gl }) => {
         camera.lookAt(...cam.look);
         gl.debug.checkShaderErrors = false;
       }}
-      style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+      style={{ position: "absolute", inset: `${-b * 100}% 0`, width: "100%", height: `${(1 + 2 * b) * 100}%`, pointerEvents: "none" }}
     >
       <Compile onReady={onReady} />
       <Render slot={slot} on={on} />
