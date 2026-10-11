@@ -266,6 +266,10 @@ function Journey() {
           </ol>
           <div className="jr-sticky">
             <Stage slot={slots.journey} className="stage stage-journey" />
+            {/* na mobilu štítek s aktuálním obdobím: spojuje kartu se stolem s milníkem pod ní */}
+            <p className="jr-now" aria-hidden="true">
+              {JOURNEY[step].years}
+            </p>
           </div>
         </div>
       </div>
