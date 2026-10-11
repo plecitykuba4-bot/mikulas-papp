@@ -191,9 +191,6 @@ function Hero() {
       <div className="hero-bg" aria-hidden="true" />
       <div className="wrap hero-grid">
         <div className="hero-copy">
-        <p className="status" data-in>
-          <span className="pulse" /> {HERO.status}
-        </p>
         <h1 className="h1">
           {words.map((w, i) => (
             <Fragment key={i}>
